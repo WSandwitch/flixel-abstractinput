@@ -1,8 +1,8 @@
 # flixel-abstractinput
 
-Small library for HaxeFlixel provides another abstraction layer allows user to **group different input, such as keyboard, mouse and gamepad (axis and buttons) in several abstract actions**, and then check them. 
+Small library for HaxeFlixel provides another abstraction layer which allows user to **group different input, such as keyboard, mouse and gamepad (axis and buttons) in several abstract actions**, and then check them. 
 Actions use Int numbers as ids or names.
-For every action you can bind **as more** standart input source **as you need**, but every source can be used **only ones**.
+For every action you can bind standart input source, for axample keys of keyboard or axis of gamepad, **as more as you need**, but every source can be used **only once**.
 
 Input source can be:
 - keyboard keys (FlxKey)
@@ -21,10 +21,10 @@ and the unified
 
 **value** can be from 0 to 1 depends on input type. For buttons it can be 0 or 1, for axis it can be 0..1. 
 
-Axis sources are devided for positiv and negativ directions, bacause of value of **value**.
+Axis sources are devided for positive and negative directions, bacause of value of **value**.
 
 ## Basic usage Example
-```
+```haxe
 var actions:AbstractInputManager = new AbstractInputManager();
 	var a = actions.addAction(GO_UP);
 	a.addKey(FlxKey.W);
@@ -66,7 +66,7 @@ var actions:AbstractInputManager = new AbstractInputManager();
   
   Code of standart AbstractActionID enum class:
   
- ``` 
+ ```haxe 
   @:enum
 abstract AbstractActionID(Int) from Int to Int{
 	public static var fromStringMap(default, null):Map<String, AbstractActionID>
