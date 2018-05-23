@@ -1,0 +1,12 @@
+{
+	"name": "flixel-abstractinput",
+	"url" : "https://github.com/AliEn707/flixel-abstractinput/",
+	"license": "MIT",
+	"tags": ["game", "openfl", "flash", "html5", "neko", "cpp", "cross", "input", "keys", "keyboard"],
+	"description": "Small library provides another abstraction layer allows user to group different input, such as keyboard, mouse and gamepad (axis and buttons) in several abstract actions, and then check them.",
+	"version": "1.0.0",
+	"classPath" : "source",
+	"releasenote": "First version",
+	"contributors": ["wsandwitch"],
+	"dependencies": { "flixel": ""}
+}
