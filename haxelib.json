@@ -4,9 +4,9 @@
 	"license": "MIT",
 	"tags": ["game", "openfl", "flash", "html5", "neko", "cpp", "cross", "input", "keys", "keyboard"],
 	"description": "Small library provides another abstraction layer allows user to group different input, such as keyboard, mouse and gamepad (axis and buttons) in several abstract actions, and then check them.",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"classPath" : "source",
-	"releasenote": "Updated description of variables",
+	"releasenote": "Added disable for different types of input",
 	"contributors": ["wsandwitch"],
 	"dependencies": { "flixel": ""}
 }

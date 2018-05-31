@@ -29,6 +29,10 @@ class AbstractInputManager{
 	public var gamepad_key_ids:Map<FlxGamepadInputID, AbstractInputGamepadKeyID> = new Map<FlxGamepadInputID, AbstractInputGamepadKeyID>();
 	public var gamepad_axis_ids:Map<GamepadAxisID, AbstractInputGamepadAxisID> = new Map<GamepadAxisID, AbstractInputGamepadAxisID>();
 
+	public var disable_keyboard:Bool=false;
+	public var disable_mouse:Bool=false;
+	public var disable_gamepad:Bool=false;
+	
 	public function new(){
 		
 	}
@@ -277,7 +281,7 @@ class AbstractInputManager{
 		treshhold:Float = 0.1
 	):Null<AbstractInputID>{
 	#if !FLX_NO_KEYBOARD
-		if (keys_ignore != null){
+		if (!disable_keyboard && keys_ignore != null){
 			var key:FlxKey = FlxG.keys.firstJustPressed();
 			if (keys_cancel==null || keys_cancel != null && keys_cancel.indexOf(key)!=-1)
 				return null;
@@ -286,7 +290,7 @@ class AbstractInputManager{
 		}
 	#end
 	#if !FLX_NO_MOUSE
-		if (mouse_ignore != null){
+		if (!disable_mouse && mouse_ignore != null){
 			if (FlxG.mouse.justPressed){
 				if (mouse_cancel == null || mouse_cancel != null && mouse_cancel.indexOf(MOUSE_LEFT) !=-1)
 					return null;
@@ -321,68 +325,71 @@ class AbstractInputManager{
 		}
 	#end
 	#if !FLX_NO_GAMEPAD
-		var gamepads:Array<FlxGamepad> = FlxG.gamepads.getActiveGamepads();
-		for(gamepad in gamepads)
-			if (gamepad != null){
-				if (gkeys_ignore != null){
-					var gkey:FlxGamepadInputID = gamepad.firstJustPressedID();
-					if (gkeys_cancel != null && gkeys_cancel.indexOf(gkey)!=-1)
-						return null;
-					if (gkey != -1 && gkeys_ignore.indexOf(gkey)==-1)
-						return new AbstractInputGamepadKeyID(null, gkey, any_gamepad?null:gamepad.id);
-				}
-				if (gaxis_ignore != null){
-					var axis:Float;
-					for (ai in [FlxGamepadInputID.POINTER_X, FlxGamepadInputID.POINTER_Y]){//, FlxGamepadInputID.LEFT_TRIGGER, FlxGamepadInputID.RIGHT_TRIGGER]){					
-						var schema:Array<GamepadAxisID> = _axis_schema[ai];
-						var axis:Float = gamepad.getAxis(ai);
-						if (Math.abs(axis) > treshhold){
-							if (axis>0){
-								if (gaxis_cancel != null && gaxis_cancel.indexOf(schema[0])!=-1)
-									return null;
-								if (gaxis_ignore.indexOf(schema[0])==-1)
-									return new AbstractInputGamepadAxisID(null, schema[0], any_gamepad?null:gamepad.id, treshhold);
-							}else{
-								if (gaxis_cancel != null && gaxis_cancel.indexOf(schema[1])!=-1)
-									return null;
-								if (gaxis_ignore.indexOf(schema[1])==-1)
-									return new AbstractInputGamepadAxisID(null, schema[1], any_gamepad?null:gamepad.id, treshhold);
-							}
-						}
+		if (!disable_gamepad){
+			var gamepads:Array<FlxGamepad> = FlxG.gamepads.getActiveGamepads();
+			for(gamepad in gamepads){
+				if (gamepad != null){
+					if (gkeys_ignore != null){
+						var gkey:FlxGamepadInputID = gamepad.firstJustPressedID();
+						if (gkeys_cancel != null && gkeys_cancel.indexOf(gkey)!=-1)
+							return null;
+						if (gkey != -1 && gkeys_ignore.indexOf(gkey)==-1)
+							return new AbstractInputGamepadKeyID(null, gkey, any_gamepad?null:gamepad.id);
 					}
-					for (ai in [FlxGamepadInputID.LEFT_ANALOG_STICK, FlxGamepadInputID.RIGHT_ANALOG_STICK]){					
-						var schema:Array<GamepadAxisID> = _axis_xy_schema[ai];
-						var axis:Float = gamepad.getXAxis(ai);
-						if (Math.abs(axis) > treshhold){
-							if (axis>0){
-								if (gaxis_cancel != null && gaxis_cancel.indexOf(schema[0])!=-1)
-									return null;
-								if (gaxis_ignore.indexOf(schema[0])==-1)
-									return new AbstractInputGamepadAxisID(null, schema[0], any_gamepad?null:gamepad.id, treshhold);
-							}else{
-								if (gaxis_cancel != null && gaxis_cancel.indexOf(schema[1])!=-1)
-									return null;
-								if (gaxis_ignore.indexOf(schema[1])==-1)
-									return new AbstractInputGamepadAxisID(null, schema[1], any_gamepad?null:gamepad.id, treshhold);
+					if (gaxis_ignore != null){
+						var axis:Float;
+						for (ai in [FlxGamepadInputID.POINTER_X, FlxGamepadInputID.POINTER_Y]){//, FlxGamepadInputID.LEFT_TRIGGER, FlxGamepadInputID.RIGHT_TRIGGER]){					
+							var schema:Array<GamepadAxisID> = _axis_schema[ai];
+							var axis:Float = gamepad.getAxis(ai);
+							if (Math.abs(axis) > treshhold){
+								if (axis>0){
+									if (gaxis_cancel != null && gaxis_cancel.indexOf(schema[0])!=-1)
+										return null;
+									if (gaxis_ignore.indexOf(schema[0])==-1)
+										return new AbstractInputGamepadAxisID(null, schema[0], any_gamepad?null:gamepad.id, treshhold);
+								}else{
+									if (gaxis_cancel != null && gaxis_cancel.indexOf(schema[1])!=-1)
+										return null;
+									if (gaxis_ignore.indexOf(schema[1])==-1)
+										return new AbstractInputGamepadAxisID(null, schema[1], any_gamepad?null:gamepad.id, treshhold);
+								}
 							}
 						}
-						axis = gamepad.getYAxis(ai);
-						if (Math.abs(axis) > treshhold){
-							if (axis>0){
-								if (gaxis_cancel != null && gaxis_cancel.indexOf(schema[2])!=-1)
-									return null;
-								if (gaxis_ignore.indexOf(schema[2])==-1)
-									return new AbstractInputGamepadAxisID(null, schema[2], any_gamepad?null:gamepad.id, treshhold);
-							}else{
-								if (gaxis_cancel != null && gaxis_cancel.indexOf(schema[3])!=-1)
-									return null;
-								if (gaxis_ignore.indexOf(schema[3])==-1)
-									return new AbstractInputGamepadAxisID(null, schema[3], any_gamepad?null:gamepad.id, treshhold);
+						for (ai in [FlxGamepadInputID.LEFT_ANALOG_STICK, FlxGamepadInputID.RIGHT_ANALOG_STICK]){					
+							var schema:Array<GamepadAxisID> = _axis_xy_schema[ai];
+							var axis:Float = gamepad.getXAxis(ai);
+							if (Math.abs(axis) > treshhold){
+								if (axis>0){
+									if (gaxis_cancel != null && gaxis_cancel.indexOf(schema[0])!=-1)
+										return null;
+									if (gaxis_ignore.indexOf(schema[0])==-1)
+										return new AbstractInputGamepadAxisID(null, schema[0], any_gamepad?null:gamepad.id, treshhold);
+								}else{
+									if (gaxis_cancel != null && gaxis_cancel.indexOf(schema[1])!=-1)
+										return null;
+									if (gaxis_ignore.indexOf(schema[1])==-1)
+										return new AbstractInputGamepadAxisID(null, schema[1], any_gamepad?null:gamepad.id, treshhold);
+								}
+							}
+							axis = gamepad.getYAxis(ai);
+							if (Math.abs(axis) > treshhold){
+								if (axis>0){
+									if (gaxis_cancel != null && gaxis_cancel.indexOf(schema[2])!=-1)
+										return null;
+									if (gaxis_ignore.indexOf(schema[2])==-1)
+										return new AbstractInputGamepadAxisID(null, schema[2], any_gamepad?null:gamepad.id, treshhold);
+								}else{
+									if (gaxis_cancel != null && gaxis_cancel.indexOf(schema[3])!=-1)
+										return null;
+									if (gaxis_ignore.indexOf(schema[3])==-1)
+										return new AbstractInputGamepadAxisID(null, schema[3], any_gamepad?null:gamepad.id, treshhold);
+								}
 							}
 						}
 					}
 				}
 			}
+		}
 	#end
 		return null;
 	}
@@ -588,6 +595,8 @@ class AbstractInputGamepadAxisID extends AbstractInputID{
 	override
 	public function update(){
 	#if !FLX_NO_GAMEPAD
+		if (disable_gamepad)
+			return;
 		for (name in actions){
 			var action = manager.actions[name];
 			if (gamepad_id==null){
@@ -739,6 +748,8 @@ class AbstractInputGamepadKeyID extends AbstractInputID{
 	override
 	public function update(){
 	#if !FLX_NO_GAMEPAD
+		if (disable_gamepad)
+			return;
 		for (name in actions){
 			var action = manager.actions[name];
 			if (gamepad_id==null){
@@ -783,6 +794,8 @@ class AbstractInputMouseID extends AbstractInputID{
 	override
 	public function update(){
 	#if !FLX_NO_MOUSE
+		if (disable_mouse)
+			return;
 		for (name in actions){
 			var action = manager.actions[name];
 			switch(key){
@@ -840,6 +853,8 @@ class AbstractInputKeyboardID extends AbstractInputID{
 	override
 	public function update(){
 	#if !FLX_NO_KEYBOARD
+		if (disable_keyboard)
+			return;
 		for (name in actions){
 			var action = manager.actions[name];
 			action.justPressed = action.justPressed || FlxG.keys.anyJustPressed([key]);
