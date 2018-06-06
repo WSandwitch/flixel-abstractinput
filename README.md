@@ -23,9 +23,12 @@ and the unified
 
 Axis sources are devided for positive and negative directions, bacause of value of **value**.
 
+## Important
+You must call **.update()** on instance of AbstractInputManager before checking of inputs. 
+
 ## Basic usage Example
 ```haxe
-var actions:AbstractInputManager = new AbstractInputManager();
+	var actions:AbstractInputManager = new AbstractInputManager();
 	var a = actions.addAction(GO_UP);
 	a.addKey(FlxKey.W);
 	a.addKey(FlxKey.UP);
